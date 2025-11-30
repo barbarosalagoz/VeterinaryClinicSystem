@@ -178,3 +178,95 @@ VeterinaryClinicSystem.sln
 ├── VeterinaryClinic.UI
 ├── VeterinaryClinic.Messaging
 └── VeterinaryClinic.Worker
+```
+
+Each project has its own responsibility and references only what it needs.  
+Her proje kendi sorumluluğuna sahiptir ve sadece ihtiyaç duyduğu katmanları referans alır.
+
+---
+
+## 4. Features / Özellikler
+
+**EN:**
+
+- Animal management (species, breed, medical history, owner relation)  
+- Per-animal appointment history  
+- Appointment creation with date, time, vet, notes  
+- Treatment records (type, description, price)  
+- Automatic calculation of total treatment cost per appointment  
+- Payment management:
+  - Per-appointment payment list  
+  - Summary (total cost / total paid / remaining balance)  
+  - Payment methods: Cash, CreditCard, BankTransfer, etc.  
+- JWT-secured Web API  
+- Cookie-authenticated MVC UI  
+- RabbitMQ-based event publishing for payments  
+- External Weather API shown on dashboard  
+
+**TR:**
+
+- Hayvan yönetimi (tür, ırk, tıbbi geçmiş, sahip ilişkisi)  
+- Hayvan bazlı randevu geçmişi  
+- Tarih, saat, veteriner ve notlarla randevu oluşturma  
+- Tedavi kayıtları (tip, açıklama, fiyat)  
+- Randevu bazında toplam tedavi ücretinin otomatik hesaplanması  
+- Ödeme yönetimi:
+  - Randevuya bağlı ödeme listesi  
+  - Özet (toplam tutar / ödenen / kalan borç)  
+  - Ödeme yöntemleri: Nakit, Kredi Kartı, Havale vb.  
+- JWT ile korunan Web API  
+- Cookie ile kimlik doğrulanan MVC arayüz  
+- Ödemeler için RabbitMQ tabanlı event yayınlama  
+- Dashboard üzerinde harici Weather API bilgisi  
+
+---
+
+## 5. Tech Stack / Teknolojiler
+
+**Language / Dil**
+
+- C# 13 / .NET 10 (preview)
+
+**Backend**
+
+- ASP.NET Core Web API  
+- Entity Framework Core (SQL Server)  
+- JWT (JSON Web Token) authentication  
+- Swashbuckle / Swagger for API documentation  
+
+**Frontend**
+
+- ASP.NET Core MVC  
+- Razor Views, TagHelpers  
+- Bootstrap 5, Bootstrap Icons  
+
+**Messaging**
+
+- RabbitMQ  
+
+**Database**
+
+- SQL Server / LocalDB  
+
+**Others**
+
+- HttpClient factory & typed clients  
+- Options pattern (`IOptions<T>`)  
+- Dependency Injection everywhere  
+
+---
+
+## 6. Getting Started / Başlangıç
+
+### 6.1. Prerequisites / Önkoşullar
+
+- .NET SDK 10 (veya projede kullandığın ilgili sürüm)  
+- SQL Server veya LocalDB  
+- RabbitMQ server (localhost varsayılan kurulumu yeterli)  
+
+### 6.2. Clone the repository / Depoyu klonla
+
+```bash
+git clone https://github.com/barbarosalagoz/VeterinaryClinicSystem.git
+cd VeterinaryClinicSystem
+```
