@@ -314,3 +314,9 @@ Create or update `appsettings.Development.json` files (especially under `Veterin
 cd VeterinaryClinic.API
 dotnet ef database update
 ```
+**Or use Package Manager Console in Visual Studio /  
+Ya da Visual Studio Package Manager Console üzerinden:**
+
+```ps
+Update-Database
+```
