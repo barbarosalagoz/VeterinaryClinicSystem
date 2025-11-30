@@ -5,8 +5,10 @@ TR: .NET 10, katmanlı mimari, JWT kimlik doğrulama, RabbitMQ mesajlaşma ve mo
 
 Geliştirme amacı:
 
-EN: Full-stack learning & portfolio project that follows real-world patterns  
-TR: Gerçek hayata yakın mimarilerle hazırlanmış bir full-stack öğrenme ve portföy projesi
+EN: Full-stack learning & portfolio project that follows real-world patterns.  
+TR: Gerçek hayata yakın mimarilerle hazırlanmış bir full-stack öğrenme ve portföy projesi.
+
+---
 
 ## Contents / İçindekiler
 
@@ -18,4 +20,161 @@ TR: Gerçek hayata yakın mimarilerle hazırlanmış bir full-stack öğrenme ve
 6. Getting Started / Başlangıç  
 7. Auth Flow / Kimlik Doğrulama Akışı  
 8. Roadmap / Yol Haritası  
-9. Author / Yazar
+9. Author / Yazar  
+
+---
+
+## 1. Overview / Genel Bakış
+
+EN:
+
+VeterinaryClinicSystem is a small but realistic clinic management application:
+
+- Manage animals, owners, appointments, treatments and payments  
+- ASP.NET Core Web API secured with JWT  
+- ASP.NET Core MVC UI with cookie authentication and a modern Bootstrap dashboard  
+- RabbitMQ messaging for domain events (e.g. `PaymentCreated`)  
+- External Weather API integration for contextual information on the dashboard  
+
+TR:
+
+VeterinaryClinicSystem küçük ama gerçekçi bir klinik yönetim uygulamasıdır:
+
+- Hayvan, sahip, randevu, tedavi ve ödeme yönetimi  
+- JWT ile korunan ASP.NET Core Web API  
+- Cookie authentication kullanan modern Bootstrap tabanlı ASP.NET Core MVC arayüzü  
+- Alan olayları için RabbitMQ mesajlaşma (ör. `PaymentCreated`)  
+- Dashboard üzerinde bağlamsal bilgi için harici Weather API entegrasyonu  
+
+---
+
+## 2. Architecture / Mimari
+
+EN:
+
+The project follows a classic layered architecture with clear separation of concerns:
+
+- **Entities** → domain models and enums  
+- **DataAccess** → EF Core DbContext, repositories, Unit of Work  
+- **Business** → application services, domain logic  
+- **API** → ASP.NET Core Web API, JWT auth, Swagger  
+- **UI** → ASP.NET Core MVC, cookie auth, typed HttpClient  
+- **Messaging** → RabbitMQ integration for publishing domain events  
+- **Worker** → background consumer (RabbitMQ) for reporting / async work  
+
+TR:
+
+Proje, sorumlulukların net ayrıldığı klasik katmanlı mimariyi takip eder:
+
+- **Entities** → domain modelleri ve enum’lar  
+- **DataAccess** → EF Core DbContext, repository’ler, Unit of Work  
+- **Business** → uygulama servisleri, iş kuralları  
+- **API** → ASP.NET Core Web API, JWT kimlik doğrulama, Swagger  
+- **UI** → ASP.NET Core MVC, cookie auth, tip güvenli HttpClient  
+- **Messaging** → alan olayları için RabbitMQ entegrasyonu  
+- **Worker** → raporlama / asenkron işler için RabbitMQ tüketicisi  
+
+### Layers / Katmanlar
+
+**Entities**
+
+- Domain classes: `User`, `Animal`, `Appointment`, `Treatment`, `Payment`, `WeatherInfo`  
+- Base entity: `BaseEntity` (`Id`, `CreatedAt`, `UpdatedAt`, `IsDeleted`)  
+- Enums:
+  - `UserRole` (e.g. Manager, Customer)  
+  - `AppointmentStatus`  
+  - `PaymentMethod`  
+  - `TreatmentType`  
+
+**DataAccess**
+
+- `VeterinaryClinicDbContext` (EF Core, SQL Server)  
+- Generic repository:
+  - `IGenericRepository<T>` / `GenericRepository<T>`  
+- Unit of Work:
+  - `IUnitOfWork` / `UnitOfWork`  
+
+**Business**
+
+- Services:
+  - `IAnimalService` / `AnimalService`  
+  - `IAppointmentService` / `AppointmentService`  
+  - `ITreatmentService` / `TreatmentService`  
+  - `IPaymentService` / `PaymentService`  
+- Responsibilities:
+  - Validation and domain rules  
+  - Appointment lifecycle  
+  - Treatment records and totals  
+  - Per-appointment payment summary and balance calculation  
+
+**API**
+
+- ASP.NET Core Web API project: `VeterinaryClinic.API`  
+- Controllers (typical examples):
+  - `AnimalsController` – CRUD for animals  
+  - `AppointmentsController` – scheduling, listing, details  
+  - `TreatmentsController` – add / list treatments per appointment  
+  - `PaymentsController` – list & summary per appointment, create payment  
+  - `AuthController` – register & login, returns JWT token  
+  - `WeatherController` – wraps external Weather API  
+- Cross-cutting:
+  - JWT auth (`JwtSettings` in `appsettings.json`)  
+  - Swagger / OpenAPI configuration  
+  - RabbitMQ publisher: `RabbitMqMessagePublisher`  
+
+**UI**
+
+- ASP.NET Core MVC project: `VeterinaryClinic.UI`  
+- Authentication:
+  - Cookie-based sign-in  
+  - `AccountController` calls API `/api/Auth/login`, stores JWT in claims  
+  - `AuthenticatedHttpClientHandler` attaches `Authorization: Bearer <token>` header  
+- Typed HttpClients:
+  - `IAnimalApiClient` / `AnimalApiClient`  
+  - `IAppointmentApiClient` / `AppointmentApiClient`  
+  - `IPaymentApiClient` / `PaymentApiClient`  
+  - `IAuthApiClient` / `AuthApiClient`  
+- UI Pages / Controllers:
+  - `Home` – dashboard, quick stats, weather info  
+  - `Animals` – animal list / details / CRUD  
+  - `Appointments` – appointment planning and details  
+  - `Treatments` – treatments per appointment  
+  - `Payments` – payment summary + payment history  
+  - `Customers` – placeholder for owner management  
+- Styling:
+  - Bootstrap 5, Bootstrap Icons, custom layout with sidebar “VetClinic” dashboard  
+
+**Messaging**
+
+- Project: `VeterinaryClinic.Messaging` (options & interfaces)  
+- Options:
+  - `RabbitMqOptions` bound from configuration (`RabbitMQ` section)  
+- Publisher:
+  - `IMessagePublisher` interface  
+  - `RabbitMqMessagePublisher` implementation (API side)  
+  - Used after successful `Payment` creation to publish `PaymentCreated` events  
+
+**Worker**
+
+- Project: `VeterinaryClinic.Worker` (background service)  
+- Listens to RabbitMQ queue(s), e.g. `payment-events`  
+- Can be extended to:
+  - Build reporting read-models  
+  - Send notifications  
+  - Integrate with external systems  
+
+---
+
+## 3. Solution Structure / Çözüm Yapısı
+
+Approximate structure / Yaklaşık klasör yapısı:
+
+```text
+VeterinaryClinicSystem.sln
+├── VeterinaryClinic.Entities
+├── VeterinaryClinic.DataAccess
+├── VeterinaryClinic.Business
+├── VeterinaryClinic.API
+├── VeterinaryClinic.UI
+├── VeterinaryClinic.Messaging
+└── VeterinaryClinic.Worker
