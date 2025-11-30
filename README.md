@@ -1,28 +1,51 @@
-🐾 VeterinaryClinicSystem
+VeterinaryClinicSystem
 
 EN: A realistic Veterinary Clinic Management System built with .NET 10, layered architecture, JWT auth, RabbitMQ messaging and a modern ASP.NET Core MVC UI.
-TR: .NET 10, katmanlı mimari, JWT kimlik doğrulama, RabbitMQ mesajlaşma ve modern ASP.NET Core MVC arayüzüyle geliştirilmiş gerçekçi bir Veteriner Klinik Yönetim Sistemi.
+TR: .NET 10, katmanlı mimari, JWT kimlik doğrulama, RabbitMQ mesajlaşma ve modern ASP.NET Core MVC arayüzü ile geliştirilmiş gerçekçi bir Veteriner Klinik Yönetim Sistemi.
 
-Developed as a full-stack case study inspired by Murat Yücedağ’s trainings, then extended with real-world patterns (RabbitMQ, JWT, modern dashboard UI).
-Murat Yücedağ’ın eğitimlerinden esinlenilen bir full-stack case çalışmasıdır; RabbitMQ, JWT ve modern dashboard arayüzü ile gerçek hayata daha yakın hale getirilmiştir.
+Geliştirme amacı:
 
-📌 Overview / Genel Bakış
+EN: Full-stack learning & portfolio project that follows real-world patterns
 
-EN:
+TR: Gerçek hayata yakın mimarilerle hazırlanmış bir full-stack öğrenme ve portföy projesi
+
+Contents / İçindekiler
+
+Overview / Genel Bakış
+
+Architecture / Mimari
+
+Solution Structure / Çözüm Yapısı
+
+Features / Özellikler
+
+Tech Stack / Teknolojiler
+
+Getting Started / Başlangıç
+
+Auth Flow / Kimlik Doğrulama Akışı
+
+Roadmap / Yol Haritası
+
+Author / Yazar
+
+1. Overview / Genel Bakış
+
+EN
 
 Manage animals, owners, appointments, treatments and payments
 
 API: ASP.NET Core Web API secured with JWT
 
-UI: ASP.NET Core MVC with cookie authentication and a Bootstrap 5 dashboard
+UI: ASP.NET Core MVC with cookie authentication and Bootstrap 5 dashboard
 
 Payments: Per-appointment payment summary (total cost / total paid / remaining balance)
 
-Messaging: RabbitMQ integration for events (e.g. PaymentCreated)
+Messaging: RabbitMQ integration for domain events (e.g. PaymentCreated)
 
-Weather: External Weather API integration for contextual dashboard info
+Weather: External Weather API integration for dashboard info
 
-TR:
+TR
 
 Hayvan, sahip, randevu, tedavi ve ödeme yönetimi
 
@@ -32,13 +55,13 @@ Cookie kimlik doğrulamalı ASP.NET Core MVC arayüzü (Bootstrap 5 dashboard)
 
 Randevu bazlı ödeme özeti (toplam tutar / ödenen / kalan borç)
 
-RabbitMQ üzerinden mesajlaşma (ör. PaymentCreated olayı)
+RabbitMQ ile domain event tabanlı mesajlaşma (örn. PaymentCreated)
 
-Dashboard’da kullanılan dış Weather API entegrasyonu
+Dashboard’da dış Weather API üzerinden hava durumu gösterimi
 
-🧱 Architecture / Mimari
+2. Architecture / Mimari
 
-Layered Architecture / Katmanlı Mimari:
+Layers / Katmanlar
 
 Entities
 
@@ -50,60 +73,100 @@ API
 
 UI
 
-Ek olarak:
+Ek bileşenler:
 
-Messaging (RabbitMQ)
+Messaging (RabbitMQ publisher)
 
-Worker (Consumer)
+Worker (RabbitMQ consumer)
 
-Veri akışı kabaca şöyle:
+Akış:
 
 UI → API → Business → DataAccess → Database
 
-Business gerektiğinde Messaging katmanına mesaj gönderir
+Business katmanı gerektiğinde Messaging katmanına mesaj yollar
 
-Worker bu mesajları tüketerek loglama, raporlama vb. görevleri yapar
+Worker bu mesajları tüketerek loglama, raporlama vb. işler yapar
 
-📂 Solution Structure / Çözüm Yapısı
+3. Solution Structure / Çözüm Yapısı
 
 Solution: VeterinaryClinicSystem.sln
 
-VeterinaryClinic.Entities – Domain entity ve enum’lar
+VeterinaryClinic.Entities
 
-VeterinaryClinic.DataAccess – EF Core DbContext, repository, UnitOfWork
+Domain entity’ler (User, Animal, Appointment, Treatment, Payment, WeatherInfo vb.)
 
-VeterinaryClinic.Business – İş kuralları ve servisler
+Enum’lar (UserRole, AppointmentStatus, PaymentMethod, TreatmentType)
 
-VeterinaryClinic.API – Web API (JWT, Swagger, RabbitMQ, Weather)
+VeterinaryClinic.DataAccess
 
-VeterinaryClinic.UI – ASP.NET Core MVC UI (Dashboard, Animals, Appointments, Payments)
+VeterinaryClinicDbContext (EF Core, SQL Server)
 
-VeterinaryClinic.Messaging – IMessagePublisher arayüzü, RabbitMqOptions vb.
+Generic repository & UnitOfWork altyapısı
 
-VeterinaryClinic.Worker – RabbitMQ tüketicisi / arka plan worker uygulaması
+VeterinaryClinic.Business
 
-🧾 Features / Özellikler
+Service arayüzleri: IAnimalService, IAppointmentService, ITreatmentService, IPaymentService…
+
+İş kuralları ve transaction yönetimi
+
+VeterinaryClinic.API
+
+ASP.NET Core Web API
+
+JWT konfigürasyonu
+
+Swagger + JWT security scheme
+
+Auth, Animals, Appointments, Treatments, Payments controller’ları
+
+RabbitMQ publisher ve Weather API entegrasyonu
+
+VeterinaryClinic.UI
+
+ASP.NET Core MVC
+
+Modern dashboard layout (Bootstrap 5)
+
+Modules: Dashboard, Animals, Appointments, Payments, Customers
+
+Cookie auth + HttpClient + AuthenticatedHttpClientHandler
+
+VeterinaryClinic.Messaging
+
+IMessagePublisher arayüzü
+
+RabbitMqOptions konfig sınıfı
+
+VeterinaryClinic.Worker
+
+RabbitMQ consumer / background worker
+
+İleride loglama, raporlama vb. işler için altyapı
+
+4. Features / Özellikler
 Animals / Hayvanlar
 
-Hayvanlar için CRUD
+CRUD işlemleri
 
-Her hayvan bir sahibiyle (User – Customer) ilişkilidir
+Her hayvan bir owner (User – Customer) ile ilişkili
+
+UI üzerinden listeme, detay ve düzenleme
 
 Appointments / Randevular
 
-Belirli hayvan için randevu oluşturma
+Hayvan bazlı randevu oluşturma
 
-Durumlar: Scheduled, Completed, Cancelled
+Statüler: Scheduled, Completed, Cancelled
 
-UI üzerinden listeleme, filtreleme, yönetim
+İlgili tedavileri ve ödemeleri bağlama
 
 Treatments / Tedaviler
 
 Randevuya bağlı tedavi / işlem ekleme
 
-TreatmentType, açıklama ve Cost alanları
+Tür (TreatmentType), açıklama ve ücret alanları
 
-Ödeme özetine otomatik dahil olurlar
+Payment summary hesaplamasına otomatik dahil olurlar
 
 Payments / Ödemeler
 
@@ -115,57 +178,54 @@ TotalPaid = ödemelerin toplamı
 
 RemainingBalance = TotalTreatmentCost − TotalPaid
 
-Ödeme geçmişi listesi:
+Ödeme geçmişi:
 
 Tarih
 
-Yöntem (Cash, CreditCard, BankTransfer vb.)
+Ödeme yöntemi (Cash, CreditCard, BankTransfer vb.)
 
 Tutar
 
-Ödeme alındıktan sonra RabbitMQ’ye event gönderilebilir (örn. PaymentCreated)
+Ödeme sonrası isteğe bağlı RabbitMQ event’i (PaymentCreated) yayınlanabilir
 
 Authentication / Kimlik Doğrulama
 
-API tarafı (JWT):
+API (JWT)
 
-AuthController üzerinden register ve login
+AuthController register & login endpoint’leri
 
-Şifreler eğitim amaçlı olarak SHA256 hash ile saklanır
+Şifreler eğitim amaçlı SHA256 hash ile saklanır
 
-Başarılı login sonrası JWT üretilir ve AuthResponse DTO’su olarak döner
+Login sonrasında AuthResponse DTO’su ile JWT döner
 
-UI tarafı (cookie + JWT):
+UI (Cookie + JWT)
 
-/Account/Login sayfası üzerinden giriş
+/Account/Login ekranı
 
-UI, API’ye AuthApiClient ile login isteği gönderir
+UI, API’ye login isteği gönderir (AuthApiClient)
 
-Dönen JWT, cookie içindeki access_token claim’i olarak saklanır
+Dönen token cookie içindeki access_token claim’inde tutulur
 
-AuthenticatedHttpClientHandler bu claim’i okuyup tüm API isteklerine Authorization: Bearer <token> header’ını ekler
+AuthenticatedHttpClientHandler, bu claim’i okuyup tüm API isteklerine
+Authorization: Bearer <token> header’ını ekler
 
-API tarafında [Authorize] attribute’lü endpoint’ler JWT’yi doğrular
+API tarafında [Authorize] attribute’u ile endpoint’ler korunur
 
-Kısaca: UI cookie ile oturumu yönetir, API ise JWT ile endpoint’leri korur.
+Messaging (RabbitMQ)
 
-Messaging (RabbitMQ) / Mesajlaşma
+RabbitMqMessagePublisher nesnesi kuyruklara mesaj yollar
 
-RabbitMqMessagePublisher önemli olaylarda RabbitMQ kuyruğuna mesaj yollar
+Konfigürasyon appsettings.json içindeki RabbitMQ bölümünden alınır
 
-Ayarlar appsettings.json altındaki RabbitMQ bölümünden gelir
-
-VeterinaryClinic.Worker uygulaması kuyruğu dinleyip bu mesajları tüketir
-
-Loglama, rapor tablosu doldurma, e-posta tetikleme gibi işlere temel oluşturur
+VeterinaryClinic.Worker kuyruğu dinleyerek bu mesajları işler
 
 Weather API
 
-Dış bir Weather API’den hava durumu verisi çekilir
+Harici Weather API ile şehir bazlı hava durumu bilgisi çekilir
 
-Dashboard’da klinik lokasyonu için mevcut hava durumu gösterilebilir
+Dashboard’daki kartlar bu veriyi kullanabilir
 
-🛠 Tech Stack / Teknolojiler
+5. Tech Stack / Teknolojiler
 
 .NET 10
 
@@ -185,20 +245,18 @@ HttpClient + DelegatingHandler
 
 IOptions<T> ile configuration binding
 
-🚀 Getting Started / Başlangıç
-1. Repository’yi klonla
-
+6. Getting Started / Başlangıç
+6.1. Repo’yu Klonla
 git clone https://github.com/barbarosalagoz/VeterinaryClinicSystem.git
-
 cd VeterinaryClinicSystem
 
-2. API konfigürasyonu (VeterinaryClinic.API/appsettings.json)
+6.2. API Ayarları (VeterinaryClinic.API/appsettings.json)
 
 ConnectionStrings:DefaultConnection:
 
-SQL Server bağlantı cümleni buraya yaz:
+SQL Server connection string’in
 
-Örnek: Server=.;Database=VeterinaryClinicDb;Trusted_Connection=True;TrustServerCertificate=True
+Örn: Server=.;Database=VeterinaryClinicDb;Trusted_Connection=True;TrustServerCertificate=True
 
 JwtSettings:
 
@@ -206,7 +264,7 @@ Issuer: VetClinic
 
 Audience: VetClinicClient
 
-SecretKey: en az 32 karakterli rastgele bir metin
+SecretKey: en az 32 karakterlik rastgele string
 
 AccessTokenExpirationMinutes: örneğin 60
 
@@ -224,85 +282,64 @@ VirtualHost: /
 
 WeatherApi:
 
-BaseUrl: örneğin https://api.weatherapi.com
+BaseUrl: Örn. https://api.weatherapi.com
 
-ApiKey: kendi API anahtarın
+ApiKey: kendi anahtarın
 
-Gerçek secret değerlerini public repo’ya koyma; geliştirme için appsettings.Development.json veya User Secrets kullanabilirsin.
-
-3. Database migration
-
-VeterinaryClinic.API klasörüne geç:
-
+6.3. Database Migration
 cd VeterinaryClinic.API
-
-Gerekirse migration oluştur:
-
 dotnet ef migrations add InitialCreate -p ../VeterinaryClinic.DataAccess -s .
-
-Veritabanını oluştur/güncelle:
-
 dotnet ef database update -p ../VeterinaryClinic.DataAccess -s .
 
-4. API’yi çalıştır
-
+6.4. API’yi Çalıştır
 cd VeterinaryClinic.API
-
 dotnet run
 
-Swagger UI:
 
-https://localhost:<PORT>/swagger
+Swagger: https://localhost:<PORT>/swagger
 
-5. UI’yi çalıştır
-
-Yeni bir terminalde:
-
+6.5. UI’yi Çalıştır
 cd VeterinaryClinic.UI
-
 dotnet run
 
-MVC UI:
 
-https://localhost:<PORT>/
+UI: https://localhost:<PORT>/
 
-6. (İsteğe bağlı) Worker’ı çalıştır
-
+6.6. (Opsiyonel) Worker’ı Çalıştır
 cd VeterinaryClinic.Worker
-
 dotnet run
 
-🔐 Auth Flow / Kimlik Doğrulama Akışı (Özet)
+7. Auth Flow / Kimlik Doğrulama Akışı (Özet)
 
-Kullanıcı /Account/Login sayfasından giriş yapar.
+Kullanıcı /Account/Login ekranından giriş yapar.
 
 UI, API’ye POST /api/Auth/login isteği gönderir.
 
-API, kullanıcıyı doğrular ve JWT içeren AuthResponse döner.
+API kullanıcıyı doğrular ve JWT içeren AuthResponse döner.
 
-UI, token’ı cookie’ye access_token claim’i olarak yazar.
+UI, token’ı cookie’de access_token claim’i olarak saklar.
 
-AuthenticatedHttpClientHandler bu claim’i okuyup tüm API çağrılarına Authorization: Bearer <token> ekler.
+AuthenticatedHttpClientHandler bu claim’i tüm API isteklerine Bearer token olarak ekler.
 
-API, [Authorize] endpoint’lerinde JWT’yi doğrular.
+API tarafında [Authorize] attribute’lü endpoint’ler token’ı doğrular.
 
-🗺 Roadmap / Yol Haritası
+8. Roadmap / Yol Haritası
 
-Detaylı müşteri (owner) yönetim ekranları
+Owner / Customer yönetimi için detaylı ekranlar
 
 RabbitMQ event’leri üzerinden gelişmiş raporlama
 
 Tam EN / TR UI dil desteği
 
-Business ve API için unit ve integration testleri
+Business ve API katmanları için testler
 
-Dashboard’da daha fazla metrik (günlük ciro, ziyaret sayısı, tür dağılımı vb.)
+Dashboard’da daha fazla metrik (ciro, ziyaret sayısı, tür dağılımı vb.)
 
-👤 Author / Yazar
+9. Author / Yazar
 
 Barbaros Emre Alagöz
 
 GitHub: https://github.com/barbarosalagoz
 
-EN: This project is primarily for learning and portfolio purposes, but it follows real-world patterns and is designed to be extensible and maintainable.
-TR: Bu proje ağırlıklı olarak öğrenme ve portföy amacıyla geliştirilmiştir; ancak gerçek dünya desenlerine uygun, genişletilebilir ve sürdürülebilir olacak şekilde tasarlanmıştır.
+EN: Mainly a learning and portfolio project, but it follows real-world patterns and is designed to be extensible and maintainable.
+TR: Ağırlıklı olarak öğrenme ve portföy amacıyla geliştirilmiş olup, gerçek dünya desenlerine uygun, genişletilebilir ve sürdürülebilir bir yapıda tasarlanmıştır.
