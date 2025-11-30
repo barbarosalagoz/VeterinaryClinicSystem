@@ -326,6 +326,8 @@ Update-Database
 - Start **VeterinaryClinic.UI** (MVC dashboard).  
 - Optionally start **VeterinaryClinic.Worker** for RabbitMQ consumer.
 
+---
+
 ## 7. Auth Flow / Kimlik Doğrulama Akışı
 
 **EN:**
@@ -361,3 +363,39 @@ Update-Database
   ```
 
 - API controller’ları `[Authorize]` (ve gerekirse `[Authorize(Roles = "Manager")]`) ile korunur.
+
+---
+
+## 8. Roadmap / Yol Haritası
+
+**EN – Possible next steps:**
+
+- Owner / customer management screens  
+- Detailed animal medical history view  
+- Role-based authorization in UI (Manager vs Customer view)  
+- More complete reporting in Worker project  
+- Docker-compose for SQL Server + RabbitMQ + API + UI  
+- Localization in UI (full TR/EN toggle)  
+
+**TR – Olası sonraki adımlar:**
+
+- Müşteri / sahip yönetim ekranları  
+- Detaylı hayvan tıbbi geçmiş ekranı  
+- UI tarafında rol bazlı yetkilendirme (Yönetici / Müşteri)  
+- Worker projesinde daha gelişmiş raporlama  
+- SQL Server + RabbitMQ + API + UI için docker-compose  
+- UI tarafında tam TR/EN çok dillilik  
+
+---
+
+## 9. Author / Yazar
+
+**Barbaros Emre Alagöz**  
+Full-stack developer in progress & MIS student.
+
+GitHub: [@barbarosalagoz](https://github.com/barbarosalagoz)
+
+EN: Feedback, issues and PRs are welcome.  
+TR: Her türlü geri bildirim, issue ve PR’a açığım. 🙂
+
+---
