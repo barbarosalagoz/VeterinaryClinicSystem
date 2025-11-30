@@ -399,3 +399,40 @@ EN: Feedback, issues and PRs are welcome.
 TR: Her türlü geri bildirim, issue ve PR’a açığım. 🙂
 
 ---
+
+## 🖼 Screenshots / Ekran Görüntüleri
+
+<table>
+  <tr>
+    <td align="center" width="50%">
+      <strong>Login Page / Giriş Ekranı</strong><br />
+      <img src="docs/screenshots/login.png" alt="Login" width="400" />
+    </td>
+    <td align="center" width="50%">
+      <strong>Dashboard</strong><br />
+      <img src="docs/screenshots/dashboard.png" alt="Dashboard" width="400" />
+    </td>
+  </tr>
+  <tr>
+    <td align="center" width="50%">
+      <strong>Animals / Hayvanlar</strong><br />
+      <img src="docs/screenshots/animals.png" alt="Animals" width="400" />
+    </td>
+    <td align="center" width="50%">
+      <strong>Appointments / Randevular</strong><br />
+      <img src="docs/screenshots/appointments.png" alt="Appointments" width="400" />
+    </td>
+  </tr>
+  <tr>
+    <td align="center" width="50%">
+      <strong>Payment Detail / Ödeme Detayı</strong><br />
+      <img src="docs/screenshots/payments.png" alt="Payments" width="400" />
+    </td>
+    <td align="center" width="50%">
+      <strong>Customers / Müşteriler</strong><br />
+      <img src="docs/screenshots/customers.png" alt="Customers" width="400" />
+    </td>
+  </tr>
+</table>
+
+---
