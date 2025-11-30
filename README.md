@@ -225,7 +225,7 @@ Her proje kendi sorumluluğuna sahiptir ve sadece ihtiyaç duyduğu katmanları 
 
 **Language / Dil**
 
-- C# 13 / .NET 10 (preview)
+- C# 14 / .NET 10
 
 **Backend**
 
