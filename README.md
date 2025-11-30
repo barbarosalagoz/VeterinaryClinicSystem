@@ -301,3 +301,16 @@ Create or update `appsettings.Development.json` files (especially under `Veterin
   }
 }
 ```
+> Port numbers may differ depending on your environment and launch profile.  
+> Port numaraları, ortamına ve launch profiline göre değişebilir.
+
+---
+
+### 6.4. Database migration / Veritabanı
+
+**If you have EF Core migrations / Eğer EF Core migration’ların varsa:**
+
+```bash
+cd VeterinaryClinic.API
+dotnet ef database update
+```
