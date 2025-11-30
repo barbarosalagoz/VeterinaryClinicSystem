@@ -1,0 +1,9 @@
+<Solution>
+  <Project Path="VeterinaryClinic.API/VeterinaryClinic.API.csproj" />
+  <Project Path="VeterinaryClinic.Business/VeterinaryClinic.Business.csproj" />
+  <Project Path="VeterinaryClinic.DataAccess/VeterinaryClinic.DataAccess.csproj" />
+  <Project Path="VeterinaryClinic.Entities/VeterinaryClinic.Entities.csproj" />
+  <Project Path="VeterinaryClinic.Messaging/VeterinaryClinic.Messaging.csproj" />
+  <Project Path="VeterinaryClinic.UI/VeterinaryClinic.UI.csproj" Id="3916c5b7-38f8-48bd-990e-1f5c9be3ebe7" />
+  <Project Path="VeterinaryClinic.Worker/VeterinaryClinic.Worker.csproj" Id="e7949e0f-d17f-4e81-bdd9-9b6b2a61b1f5" />
+</Solution>

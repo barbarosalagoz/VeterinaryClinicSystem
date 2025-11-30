@@ -1,0 +1,33 @@
+﻿@model IReadOnlyList<VeterinaryClinic.UI.Models.AnimalListItemViewModel>
+
+@{
+    ViewData["Title"] = "Animals";
+}
+
+<h1>Animals</h1>
+
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>Id</th>
+            <th>Name</th>
+            <th>Species</th>
+            <th>Age</th>
+            <th>Weight</th>
+            <th>Breed</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var a in Model)
+        {
+            <tr>
+                <td>@a.Id</td>
+                <td>@a.Name</td>
+                <td>@a.Species</td>
+                <td>@a.Age</td>
+                <td>@a.Weight</td>
+                <td>@a.Breed</td>
+            </tr>
+        }
+    </tbody>
+</table>

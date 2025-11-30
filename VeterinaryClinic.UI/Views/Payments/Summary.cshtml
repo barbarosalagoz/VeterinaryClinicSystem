@@ -1,0 +1,141 @@
+﻿@model VeterinaryClinic.UI.Models.Payments.PaymentSummaryViewModel
+@using System.Globalization
+
+@{
+    ViewData["Title"] = "Payments";
+    var culture = new CultureInfo("tr-TR");
+}
+
+<div class="container mt-4">
+    <!-- Başlık + geri dön butonu -->
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <div>
+            <h2 class="mb-0">Payments</h2>
+            <small class="text-muted">
+                @Model.AnimalName (@Model.Species) – @Model.Date @Model.Time
+            </small>
+        </div>
+        <a asp-controller="Appointments"
+           asp-action="Index"
+           class="btn btn-outline-secondary">
+            ← Back to Appointments
+        </a>
+    </div>
+
+    <div class="row g-4">
+        <!-- Sol: Bakiye özeti -->
+        <div class="col-md-4">
+            <div class="card shadow-sm h-100">
+                <div class="card-body">
+                    <h5 class="card-title mb-3">Balance summary</h5>
+
+                    <dl class="row mb-0">
+                        <dt class="col-7 text-muted">Total treatment cost</dt>
+                        <dd class="col-5 text-end fw-semibold">
+                            @Model.TotalTreatmentCost.ToString("C2", culture)
+                        </dd>
+
+                        <dt class="col-7 text-muted">Total paid</dt>
+                        <dd class="col-5 text-end fw-semibold text-success">
+                            @Model.TotalPaid.ToString("C2", culture)
+                        </dd>
+
+                        <dt class="col-7 text-muted">Remaining balance</dt>
+                        <dd class="col-5 text-end fw-semibold @(Model.RemainingBalance > 0 ? "text-danger" : "text-success")">
+                            @Model.RemainingBalance.ToString("C2", culture)
+                        </dd>
+                    </dl>
+                </div>
+            </div>
+        </div>
+
+        <!-- Sağ: Ödemeler tablosu + yeni ödeme formu -->
+        <div class="col-md-8">
+            <!-- Existing payments -->
+            <div class="card shadow-sm mb-4">
+                <div class="card-body">
+                    <h5 class="card-title mb-3">Existing payments</h5>
+
+                    <div class="table-responsive">
+                        <table class="table table-sm align-middle mb-0">
+                            <thead class="table-light">
+                                <tr>
+                                    <th>Date</th>
+                                    <th>Amount</th>
+                                    <th>Method</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @if (Model.Payments == null || !Model.Payments.Any())
+                                {
+                                    <tr>
+                                        <td colspan="3" class="text-center text-muted py-3">
+                                            No payments recorded yet.
+                                        </td>
+                                    </tr>
+                                }
+                                else
+                                {
+                                    foreach (var p in Model.Payments)
+                                    {
+                                        <tr>
+                                            <td>@p.PaidAt.ToString("yyyy-MM-dd HH:mm")</td>
+                                            <td>@p.Amount.ToString("C2", culture)</td>
+                                            <td>@p.MethodText</td>
+                                        </tr>
+                                    }
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Add payment -->
+            <div class="card shadow-sm">
+                <div class="card-body">
+                    <h5 class="card-title mb-3">Add payment</h5>
+
+                    <form asp-action="Add" method="post" class="row g-3">
+                        <input type="hidden" asp-for="NewPayment.AppointmentId" />
+
+                        <div class="col-12 col-md-4">
+                            <label asp-for="NewPayment.Amount" class="form-label">Amount</label>
+                            <div class="input-group">
+                                <span class="input-group-text">₺</span>
+                                <input asp-for="NewPayment.Amount" class="form-control" />
+                            </div>
+                            <span asp-validation-for="NewPayment.Amount" class="text-danger"></span>
+                        </div>
+
+                        <div class="col-12 col-md-4">
+                            <label asp-for="NewPayment.Method" class="form-label">Payment method</label>
+                            <select asp-for="NewPayment.Method"
+                                    asp-items="Model.NewPayment.PaymentMethods"
+                                    class="form-select">
+                            </select>
+                            <span asp-validation-for="NewPayment.Method" class="text-danger"></span>
+                        </div>
+
+                        <div class="col-12">
+                            <label asp-for="NewPayment.Notes" class="form-label">Notes</label>
+                            <textarea asp-for="NewPayment.Notes" class="form-control" rows="3"></textarea>
+                            <span asp-validation-for="NewPayment.Notes" class="text-danger"></span>
+                        </div>
+
+                        <div class="col-12 text-end">
+                            <button type="submit" class="btn btn-primary">
+                                Save payment
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}
+

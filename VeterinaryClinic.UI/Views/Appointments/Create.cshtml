@@ -1,0 +1,59 @@
+﻿@model VeterinaryClinic.UI.Models.Appointments.AppointmentCreateViewModel
+
+@{
+    ViewData["Title"] = "Yeni Randevu";
+}
+
+<div class="row justify-content-center">
+    <div class="col-md-8 col-lg-6">
+        <div class="d-flex align-items-center mb-4">
+            <a asp-action="Index" class="btn btn-outline-secondary me-3">
+                <i class="bi bi-arrow-left"></i> Geri
+            </a>
+            <h2 class="fw-bold mb-0">Yeni Randevu Oluştur</h2>
+        </div>
+
+        <div class="card-box p-4">
+            <form asp-action="Create" method="post">
+
+                <!-- Hayvan Seçimi Dropdown -->
+                <div class="mb-3">
+                    <label class="form-label fw-bold">Hasta (Hayvan)</label>
+                    <select asp-for="AnimalId" asp-items="Model.Animals" class="form-select">
+                        <option value="">-- Lütfen Seçiniz --</option>
+                    </select>
+                    <span asp-validation-for="AnimalId" class="text-danger small"></span>
+                </div>
+
+                <div class="row">
+                    <!-- Tarih -->
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label fw-bold">Tarih</label>
+                        <input asp-for="Date" type="date" class="form-control" />
+                        <span asp-validation-for="Date" class="text-danger small"></span>
+                    </div>
+
+                    <!-- Saat -->
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label fw-bold">Saat</label>
+                        <input asp-for="Time" type="time" class="form-control" />
+                        <span asp-validation-for="Time" class="text-danger small"></span>
+                    </div>
+                </div>
+
+                <!-- Notlar (Senin modelindeki 'Notes' alanı) -->
+                <div class="mb-4">
+                    <label class="form-label fw-bold">Açıklama / Notlar</label>
+                    <textarea asp-for="Notes" class="form-control" rows="3" placeholder="Örn: Yıllık aşı kontrolü..."></textarea>
+                    <span asp-validation-for="Notes" class="text-danger small"></span>
+                </div>
+
+                <div class="d-grid">
+                    <button type="submit" class="btn btn-primary btn-lg">
+                        <i class="bi bi-check-lg me-2"></i> Randevuyu Kaydet
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

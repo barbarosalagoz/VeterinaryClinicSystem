@@ -1,0 +1,163 @@
+﻿@model VeterinaryClinic.UI.Models.DashboardViewModel
+
+@{
+    ViewData["Title"] = "Dashboard";
+}
+
+<!-- Hoşgeldiniz ve Başlık Alanı -->
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <div>
+        <h2 class="fw-bold text-dark mb-0">Genel Bakış</h2>
+        <p class="text-muted">Klinik durumunu ve günlük hava raporunu takip edebilirsiniz.</p>
+    </div>
+    <a href="@Url.Action("Index", "Animals")" class="btn btn-primary shadow-sm">
+        <i class="bi bi-plus-lg me-1"></i> Yeni Hayvan Kaydı
+    </a>
+</div>
+
+<!-- İstatistik Kartları -->
+<div class="row g-4 mb-5">
+    <!-- Kart 1: Toplam Hasta -->
+    <div class="col-md-6 col-xl-3">
+        <div class="card-box p-4 h-100 d-flex align-items-center justify-content-between border-start border-4 border-primary">
+            <div>
+                <span class="d-block text-muted text-uppercase fw-bold small mb-1">Toplam Hasta</span>
+                <h3 class="fw-bold mb-0 text-dark">@Model.TotalAnimals</h3>
+            </div>
+            <div class="bg-primary bg-opacity-10 text-primary rounded-circle d-flex align-items-center justify-content-center" style="width: 50px; height: 50px;">
+                <i class="bi bi-tencent-qq fs-4"></i>
+            </div>
+        </div>
+    </div>
+
+    <!-- Kart 2: Toplam Randevu -->
+    <div class="col-md-6 col-xl-3">
+        <div class="card-box p-4 h-100 d-flex align-items-center justify-content-between border-start border-4 border-success">
+            <div>
+                <span class="d-block text-muted text-uppercase fw-bold small mb-1">Randevular</span>
+                <h3 class="fw-bold mb-0 text-dark">@Model.TotalAppointments</h3>
+            </div>
+            <div class="bg-success bg-opacity-10 text-success rounded-circle d-flex align-items-center justify-content-center" style="width: 50px; height: 50px;">
+                <i class="bi bi-calendar-check fs-4"></i>
+            </div>
+        </div>
+    </div>
+
+    <!-- Kart 3: Bekleyen Ödeme -->
+    <div class="col-md-6 col-xl-3">
+        <div class="card-box p-4 h-100 d-flex align-items-center justify-content-between border-start border-4 border-warning">
+            <div>
+                <span class="d-block text-muted text-uppercase fw-bold small mb-1">Bekleyen Ödeme</span>
+                <h3 class="fw-bold mb-0 text-dark">₺ @Model.PendingPaymentsAmount</h3>
+            </div>
+            <div class="bg-warning bg-opacity-10 text-warning rounded-circle d-flex align-items-center justify-content-center" style="width: 50px; height: 50px;">
+                <i class="bi bi-wallet2 fs-4"></i>
+            </div>
+        </div>
+    </div>
+
+    <!-- Kart 4: Hava Durumu (YENİ EKLENDİ) -->
+    <div class="col-md-6 col-xl-3">
+        <div class="card-box p-4 h-100 border-start border-4 border-info">
+            <div class="d-flex justify-content-between align-items-center">
+                <div>
+                    <!-- Şehir (Boşsa Bilinmiyor yazar) -->
+                    <h5 class="fw-bold text-dark mb-1">
+                        @(string.IsNullOrEmpty(Model.Weather?.City) ? "Bilinmiyor" : Model.Weather.City)
+                    </h5>
+                    
+                    <!-- Sıcaklık -->
+                    <h3 class="mb-0 fw-bold">
+                        @(Model.Weather != null ? Model.Weather.Temperature.ToString("0") : "0")°C
+                    </h3>
+                    
+                    <!-- Açıklama (Parçalı Bulutlu vs.) -->
+                    <small class="text-muted text-capitalize">
+                        @(Model.Weather?.Description ?? "Veri Yok")
+                    </small>
+                </div>
+                
+                <!-- İkon (OpenWeatherMap'ten çekilir) -->
+                @if (!string.IsNullOrEmpty(Model.Weather?.IconCode) && Model.Weather.IconCode != "unknown")
+                {
+                    <!-- KRİTİK DÜZELTME: @@2x yapıldı (Razor'da "at" işareti kaçış karakteridir) -->
+                    <img src="https://openweathermap.org/img/wn/@(Model.Weather.IconCode)@@2x.png" 
+                         alt="Hava Durumu" 
+                         style="width: 60px; height: 60px;">
+                }
+                else
+                {
+                    <i class="bi bi-cloud-slash fs-1 text-muted"></i>
+                }
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Alt Tablolar ve Hızlı Erişim -->
+<div class="row">
+    <!-- Son Kayıtlar Tablosu -->
+    <div class="col-lg-8 mb-4">
+        <div class="card-box p-4 h-100">
+            <h5 class="fw-bold mb-4">Son Eklenen Hayvanlar</h5>
+            <div class="table-responsive">
+                <table class="table table-hover align-middle">
+                    <thead class="table-light">
+                        <tr>
+                            <th>#ID</th>
+                            <th>İsim</th>
+                            <th>Tür</th>
+                            <th>Irk</th>
+                            <th>Durum</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @if (Model.RecentAnimals != null && Model.RecentAnimals.Any())
+                        {
+                            @foreach (var animal in Model.RecentAnimals)
+                            {
+                                <tr>
+                                    <td>#@animal.Id</td>
+                                    <td class="fw-bold">@animal.Name</td>
+                                    <td>@animal.Species</td>
+                                    <td>@animal.Breed</td>
+                                    <td><span class="badge bg-success">Kayıtlı</span></td>
+                                </tr>
+                            }
+                        }
+                        else
+                        {
+                            <tr>
+                                <td colspan="5" class="text-center text-muted py-3">Henüz veri yok.</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- Hızlı İşlemler Paneli -->
+    <div class="col-lg-4 mb-4">
+        <div class="card-box p-4">
+            <h5 class="fw-bold mb-4">Hızlı Erişim</h5>
+            <div class="d-grid gap-2">
+                <a href="@Url.Action("Index", "Appointments")" class="btn btn-primary btn-lg text-start shadow-sm">
+                    <i class="bi bi-calendar-plus me-2"></i> Randevulara Git
+                </a>
+                <a href="@Url.Action("Index", "Payments")" class="btn btn-outline-success text-start">
+                    <i class="bi bi-cash-stack me-2"></i> Ödeme Al
+                </a>
+                <button class="btn btn-outline-secondary text-start" type="button">
+                    <i class="bi bi-search me-2"></i> Hasta Ara
+                </button>
+            </div>
+        </div>
+        
+        <!-- Duyuru Alanı -->
+        <div class="card-box p-4 mt-4 bg-primary text-white shadow-sm">
+            <h5 class="fw-bold"><i class="bi bi-megaphone me-2"></i> Duyuru</h5>
+            <p class="mb-0 small opacity-75">Sistem bakımı bu gece 03:00'da yapılacaktır. Verilerinizi yedekleyiniz.</p>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,25 @@
+## .NET / Visual Studio
+
+bin/
+obj/
+.vs/
+*.user
+*.swp
+*.suo
+
+# Rider / JetBrains
+.idea/
+
+# Build sonuçları
+*.dll
+*.pdb
+*.log
+
+# Publish output
+publish/
+dist/
+
+# Secrets
+appsettings.Development.json
+appsettings.Local.json
+*.Secrets.json

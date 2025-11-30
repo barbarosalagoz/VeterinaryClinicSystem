@@ -1,0 +1,15 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\VeterinaryClinic.DataAccess\VeterinaryClinic.DataAccess.csproj" />
+    <ProjectReference Include="..\VeterinaryClinic.Entities\VeterinaryClinic.Entities.csproj" />
+    <ProjectReference Include="..\VeterinaryClinic.Messaging\VeterinaryClinic.Messaging.csproj" />
+  </ItemGroup>
+
+</Project>

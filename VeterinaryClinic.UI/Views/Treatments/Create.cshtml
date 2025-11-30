@@ -1,0 +1,71 @@
+﻿@model VeterinaryClinic.UI.Models.Treatments.TreatmentCreateViewModel
+
+@{
+    ViewData["Title"] = "Yeni Tedavi Ekle";
+}
+
+<div class="row justify-content-center">
+    <div class="col-md-6">
+        <div class="card-box p-4 shadow-sm">
+
+            <div class="d-flex align-items-center mb-4">
+                <!-- Geri butonu: İşlem iptal edilirse ödeme sayfasına döner -->
+                <a href="@Url.Action("Index", "Payments", new { appointmentId = Model.AppointmentId })" class="btn btn-outline-secondary me-3">
+                    <i class="bi bi-arrow-left"></i> Geri
+                </a>
+                <div>
+                    <h3 class="fw-bold mb-0">Yeni Tedavi Ekle</h3>
+                    <p class="text-muted small mb-0">Randevuya yapılan işlemi giriniz.</p>
+                </div>
+            </div>
+
+            <form asp-action="Create" method="post">
+                <!-- Hangi randevuya eklediğimizi unutmamak için gizli ID -->
+                <input type="hidden" asp-for="AppointmentId" />
+
+                <!-- Tedavi Türü (Seçmeli Liste) -->
+                <div class="mb-3">
+                    <label class="form-label fw-bold">İşlem / Tedavi Türü</label>
+                    <select asp-for="TreatmentType" class="form-select">
+                        <option value="">-- Seçiniz --</option>
+                        <option value="Genel Muayene">Genel Muayene</option>
+                        <option value="Karma Aşı">Karma Aşı</option>
+                        <option value="Kuduz Aşısı">Kuduz Aşısı</option>
+                        <option value="İç-Dış Parazit">İç-Dış Parazit</option>
+                        <option value="Kan Tahlili">Kan Tahlili</option>
+                        <option value="Röntgen">Röntgen / X-Ray</option>
+                        <option value="Ultrason">Ultrason</option>
+                        <option value="Cerrahi Müdahale">Cerrahi Müdahale</option>
+                        <option value="Diş Temizliği">Diş Temizliği</option>
+                        <option value="Tıraş & Bakım">Tıraş & Bakım</option>
+                    </select>
+                    <span asp-validation-for="TreatmentType" class="text-danger small"></span>
+                </div>
+
+                <!-- Maliyet -->
+                <div class="mb-3">
+                    <label class="form-label fw-bold">Ücret (TL)</label>
+                    <div class="input-group">
+                        <span class="input-group-text">₺</span>
+                        <input asp-for="Cost" type="number" step="0.01" class="form-control fw-bold" placeholder="0.00" />
+                    </div>
+                    <span asp-validation-for="Cost" class="text-danger small"></span>
+                </div>
+
+                <!-- Notlar -->
+                <div class="mb-4">
+                    <label class="form-label fw-bold">Notlar / Açıklama</label>
+                    <textarea asp-for="Notes" class="form-control" rows="3" placeholder="Örn: Sol ön bacakta incinme tespit edildi..."></textarea>
+                    <span asp-validation-for="Notes" class="text-danger small"></span>
+                </div>
+
+                <!-- Kaydet Butonu -->
+                <div class="d-grid">
+                    <button type="submit" class="btn btn-primary btn-lg">
+                        <i class="bi bi-save me-2"></i> Tedaviyi Kaydet
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,165 @@
+﻿@using VeterinaryClinic.UI.Models.Payments
+@model PaymentPageViewModel
+
+@{
+    ViewData["Title"] = "Ödeme Yönetimi";
+}
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <div class="d-flex align-items-center">
+        <!-- Geri butonu Randevulara döner -->
+        <a asp-controller="Appointments" asp-action="Index" class="btn btn-outline-secondary me-3 shadow-sm">
+            <i class="bi bi-arrow-left"></i>
+        </a>
+        <div>
+            <h2 class="fw-bold text-dark mb-0">Ödeme Detayı</h2>
+            <p class="text-muted mb-0">
+                <span class="fw-bold text-primary">@Model.AnimalName</span>
+                (@Model.Species) - @Model.Date @Model.Time
+            </p>
+        </div>
+    </div>
+</div>
+
+@if (TempData["Success"] != null)
+{
+    <div class="alert alert-success alert-dismissible fade show shadow-sm" role="alert">
+        <i class="bi bi-check-circle-fill me-2"></i> @TempData["Success"]
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+}
+
+<div class="row">
+    <!-- SOL KOLON: Özet Kartı ve Ödeme Formu -->
+    <div class="col-lg-4 mb-4">
+
+        <!-- Özet Kartı -->
+        <div class="card-box p-4 mb-4 border-top border-4 border-primary">
+            <h5 class="fw-bold mb-4">Hesap Özeti</h5>
+
+            <div class="d-flex justify-content-between mb-2">
+                <span class="text-muted">Toplam Tutar:</span>
+                <span class="fw-bold fs-5">₺@Model.TotalTreatmentCost</span>
+            </div>
+            <div class="d-flex justify-content-between mb-2">
+                <span class="text-muted">Ödenen:</span>
+                <span class="fw-bold fs-5 text-success">₺@Model.TotalPaid</span>
+            </div>
+            <hr />
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <span class="fw-bold text-dark">Kalan Borç:</span>
+                <span class="fw-bold fs-3 text-danger">₺@Model.RemainingBalance</span>
+            </div>
+
+            <!-- YENİ EKLENEN BUTON BURADA -->
+            <a href="@Url.Action("Create", "Treatments", new { appointmentId = Model.AppointmentId })"
+               class="btn btn-outline-primary w-100 fw-bold">
+                <i class="bi bi-bandaid me-2"></i> Yeni Tedavi / İşlem Ekle
+            </a>
+        </div>
+
+        <!-- Ödeme Formu Mantığı -->
+        @if (Model.RemainingBalance > 0)
+        {
+            <div class="card-box p-4 bg-light border">
+                <h5 class="fw-bold mb-3"><i class="bi bi-credit-card me-2"></i>Ödeme Al</h5>
+
+                <form asp-action="Create" method="post">
+                    <input type="hidden" asp-for="NewPayment.AppointmentId" />
+
+                    <div class="mb-3">
+                        <label class="form-label small fw-bold text-muted">Ödeme Tutarı</label>
+                        <div class="input-group">
+                            <span class="input-group-text">₺</span>
+                            <input asp-for="NewPayment.Amount" type="number" step="0.01" class="form-control fw-bold" />
+                        </div>
+                        <span asp-validation-for="NewPayment.Amount" class="text-danger small"></span>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label small fw-bold text-muted">Ödeme Yöntemi</label>
+                        <select asp-for="NewPayment.Method" class="form-select"
+                                asp-items="Model.NewPayment.PaymentMethods">
+                        </select>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label small fw-bold text-muted">Notlar</label>
+                        <textarea asp-for="NewPayment.Notes" class="form-control" rows="2"></textarea>
+                    </div>
+
+                    <div class="d-grid">
+                        <button type="submit" class="btn btn-success fw-bold">
+                            <i class="bi bi-check-lg me-1"></i> Ödemeyi Kaydet
+                        </button>
+                    </div>
+                </form>
+            </div>
+        }
+        else if (Model.TotalTreatmentCost == 0)
+        {
+            <!-- YENİ DURUM: Henüz tedavi eklenmemiş -->
+            <div class="alert alert-warning shadow-sm border-0">
+                <div class="d-flex align-items-center">
+                    <i class="bi bi-exclamation-circle fs-1 me-3 opacity-50"></i>
+                    <div>
+                        <strong class="d-block">Henüz İşlem Girilmedi</strong>
+                        <span class="small">Ödeme alabilmek için önce yukarıdaki butondan tedavi/işlem eklemelisiniz.</span>
+                    </div>
+                </div>
+            </div>
+        }
+        else
+        {
+            <!-- Borç yoksa ve tedavi girilmişse -->
+            <div class="alert alert-success d-flex align-items-center shadow-sm">
+                <i class="bi bi-check-circle-fill fs-3 me-3"></i>
+                <div>
+                    <strong>Ödeme Tamamlandı!</strong>
+                    <div class="small">Bu randevunun tüm borcu ödenmiştir.</div>
+                </div>
+            </div>
+        }
+    </div>
+
+    <!-- SAĞ KOLON: Geçmiş Ödemeler Listesi -->
+    <div class="col-lg-8">
+        <div class="card-box p-4 h-100">
+            <h5 class="fw-bold mb-4">Ödeme Geçmişi</h5>
+
+            <div class="table-responsive">
+                <table class="table table-hover align-middle">
+                    <thead class="table-light">
+                        <tr>
+                            <th>Tarih</th>
+                            <th>Yöntem</th>
+                            <th>Tutar</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @if (Model.Payments != null && Model.Payments.Any())
+                        {
+                            @foreach (var item in Model.Payments)
+                            {
+                                <tr>
+                                    <td>@item.PaidAt.ToString("dd.MM.yyyy HH:mm")</td>
+                                    <td><span class="badge bg-secondary">@item.MethodText</span></td>
+                                    <td class="fw-bold text-dark">₺@item.Amount</td>
+                                </tr>
+                            }
+                        }
+                        else
+                        {
+                            <tr>
+                                <td colspan="3" class="text-center py-5 text-muted">
+                                    <i class="bi bi-wallet2 display-4 mb-3 opacity-25"></i>
+                                    <p class="mb-0">Henüz kayıtlı bir ödeme bulunmamaktadır.</p>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
