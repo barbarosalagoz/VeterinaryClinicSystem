@@ -326,4 +326,38 @@ Update-Database
 - Start **VeterinaryClinic.UI** (MVC dashboard).  
 - Optionally start **VeterinaryClinic.Worker** for RabbitMQ consumer.
 
-Bunu README’deki ilgili bölümün yerine koyarsan görünüm, üst tarafla tamamen uyumlu olur.
+## 7. Auth Flow / Kimlik Doğrulama Akışı
+
+**EN:**
+
+- User registers via `/api/Auth/register` (Swagger) or via a seeding script.  
+- Login is handled in UI (`AccountController` → `IAuthApiClient.LoginAsync`).  
+- API returns an `AuthResponse` containing:
+  - `token` (JWT)  
+  - `expiresAt`  
+  - `fullName`, `email`, `role`  
+- UI stores the token in cookie claims (`access_token` claim).  
+- Typed HttpClients use `AuthenticatedHttpClientHandler` to attach:
+
+  ```http
+  Authorization: Bearer {token}
+  ```
+
+  - API controllers are decorated with `[Authorize]` (and optionally `[Authorize(Roles = "Manager")]`).
+
+**TR:**
+
+- Kullanıcı `/api/Auth/register` (Swagger) veya seed işlemiyle oluşturulur.
+- Giriş, UI tarafında `AccountController` ve `IAuthApiClient.LoginAsync` ile yapılır.
+- API, aşağıdaki alanlara sahip bir `AuthResponse` döner:
+  - `token` (JWT)
+  - `expiresAt`
+  - `fullName`, `email`, `role`
+- UI bu token’ı cookie claim’i olarak saklar (`access_token` claim’i).
+- Tip güvenli HttpClient’ler `AuthenticatedHttpClientHandler` üzerinden:
+
+  ```http
+  Authorization: Bearer {token}
+  ```
+
+- API controller’ları `[Authorize]` (ve gerekirse `[Authorize(Roles = "Manager")]`) ile korunur.
