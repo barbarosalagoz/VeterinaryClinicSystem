@@ -270,3 +270,34 @@ Her proje kendi sorumluluğuna sahiptir ve sadece ihtiyaç duyduğu katmanları 
 git clone https://github.com/barbarosalagoz/VeterinaryClinicSystem.git
 cd VeterinaryClinicSystem
 ```
+### 6.3. Configuration / Konfigürasyon
+
+Create or update `appsettings.Development.json` files (especially under `VeterinaryClinic.API` and `VeterinaryClinic.UI`).  
+`appsettings.Development.json` dosyalarını oluştur veya güncelle (özellikle `VeterinaryClinic.API` ve `VeterinaryClinic.UI` altında).
+
+**Example API settings (VeterinaryClinic.API):**
+
+```json
+{
+  "ConnectionStrings": {
+    "DefaultConnection": "Server=.;Database=VeterinaryClinicDb;Trusted_Connection=True;TrustServerCertificate=True"
+  },
+  "JwtSettings": {
+    "Issuer": "VetClinic",
+    "Audience": "VetClinicClients",
+    "SecretKey": "CHANGE_THIS_TO_A_LONG_SECURE_KEY",
+    "AccessTokenExpirationMinutes": 60
+  },
+  "RabbitMQ": {
+    "HostName": "localhost",
+    "UserName": "guest",
+    "Password": "guest",
+    "Port": 5672,
+    "VirtualHost": "/"
+  },
+  "WeatherApi": {
+    "BaseUrl": "https://api.example.com",
+    "ApiKey": "YOUR_WEATHER_API_KEY"
+  }
+}
+```
