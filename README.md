@@ -320,3 +320,10 @@ Ya da Visual Studio Package Manager Console üzerinden:**
 ```ps
 Update-Database
 ```
+### 6.5. Run the projects / Projeleri çalıştır
+
+- Start **VeterinaryClinic.API** (Swagger should open).  
+- Start **VeterinaryClinic.UI** (MVC dashboard).  
+- Optionally start **VeterinaryClinic.Worker** for RabbitMQ consumer.
+
+Bunu README’deki ilgili bölümün yerine koyarsan görünüm, üst tarafla tamamen uyumlu olur.
